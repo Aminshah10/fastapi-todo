@@ -9,8 +9,14 @@ router = APIRouter(tags=["tasks"])
 DB_DEPENDENCY = Depends(get_db)
 
 @router.get("/tasks", response_model=list[ResponseTaskSchema])
-def retrieve_all_tasks(db:Session = DB_DEPENDENCY):
-    result = db.query(TaskModel).all()
+def retrieve_all_tasks(db:Session = DB_DEPENDENCY, 
+                       completed :bool | None = Query(default=None, description="filter tasks by their completion status"),
+                       limit :int = Query(default=10, gt=0, le=100, description="limit the number of tasks returned"),
+                       offset :int = Query(default=0, ge=0, description="offset for pagination")):
+    if completed is not None:
+        result = db.query(TaskModel).filter(TaskModel.is_done == completed).offset(offset).limit(limit).all()
+    else:
+        result = db.query(TaskModel).offset(offset).limit(limit).all()
     return result
 
 @router.get("/tasks/{task_id}", response_model=ResponseTaskSchema)
