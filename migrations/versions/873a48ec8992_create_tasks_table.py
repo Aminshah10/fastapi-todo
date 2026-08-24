@@ -1,8 +1,8 @@
 """create tasks table
 
-Revision ID: b94eae52d0be
+Revision ID: 873a48ec8992
 Revises: 
-Create Date: 2026-08-24 12:01:37.707213
+Create Date: 2026-08-24 17:02:25.828667
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'b94eae52d0be'
+revision: str = '873a48ec8992'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,8 +26,8 @@ def upgrade() -> None:
     sa.Column('title', sa.String(length=100), nullable=False),
     sa.Column('description', sa.Text(length=300), nullable=True),
     sa.Column('is_done', sa.Boolean(), nullable=False),
-    sa.Column('create_date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('update_date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created_date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('updated_date', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
