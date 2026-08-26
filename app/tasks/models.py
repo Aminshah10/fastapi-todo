@@ -1,13 +1,17 @@
-from sqlalchemy import Integer, Column, String, Boolean, Text, DateTime, func
+from sqlalchemy import Integer, Column, String, Boolean, Text, DateTime, ForeignKey, func
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 class TaskModel(Base):
     __tablename__ = "tasks"
     
     id = Column(Integer, autoincrement=True, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
     title = Column(String(100), nullable=False)
     description = Column(Text(300), nullable=True)
     is_done = Column(Boolean, default=False, nullable=False)
     
     created_date = Column(DateTime, server_default=func.now())
     updated_date = Column(DateTime, server_default=func.now(), server_onupdate=func.now())
+    
+    user = relationship("UserModel", back_populates="tasks", uselist=False)
