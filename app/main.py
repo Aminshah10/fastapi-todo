@@ -22,7 +22,7 @@ app = FastAPI(
     - Delete tasks
     - Track task completion status
     """,
-    version="0.0.1",
+    version="0.0.2",
 )
 app.include_router(task_routes)
 app.include_router(user_routes)
