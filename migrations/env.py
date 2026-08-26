@@ -6,6 +6,7 @@ from alembic import context
 from app.core.config import setting
 from app.core.database import Base
 from app.tasks.models import *
+from app.users.models import *
 
 
 config = context.config
