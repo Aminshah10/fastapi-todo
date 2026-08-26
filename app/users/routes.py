@@ -1,14 +1,16 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from app.users.models import UserModel
-from app.users.schemas import *
+from app.users.schemas import RegisterUserSchema, LoginUserSchema, UserResponseSchema
 from app.core.database import get_db
 from sqlalchemy.orm import Session
 
-router = APIRouter(tags=["users"])
+router = APIRouter(
+    prefix="/users",
+    tags=["users"])
 
 DB_DEPENDENCY = Depends(get_db)
 
-@router.post("/users/login")
+@router.post("/login", response_model=UserResponseSchema)
 def user_login(
     request: LoginUserSchema,
     db: Session = DB_DEPENDENCY
@@ -33,7 +35,9 @@ def user_login(
 
     return user
 
-@router.post("/users/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register", 
+             status_code=status.HTTP_201_CREATED, 
+             response_model=UserResponseSchema)
 def user_register(
     request: RegisterUserSchema,
     db: Session = DB_DEPENDENCY
