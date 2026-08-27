@@ -18,4 +18,10 @@ class UserResponseSchema(BaseModel):
     created_date: datetime
     
     model_config = ConfigDict(from_attributes=True)
+
+class TokenResponseSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
     
+    model_config = ConfigDict(from_attributes=True)

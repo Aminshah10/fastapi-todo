@@ -1,8 +1,9 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from app.users.models import UserModel
-from app.users.schemas import RegisterUserSchema, LoginUserSchema, UserResponseSchema
+from app.users.schemas import RegisterUserSchema, LoginUserSchema, UserResponseSchema, TokenResponseSchema
 from app.core.database import get_db
 from sqlalchemy.orm import Session
+from app.auth.jwt_auth import generate_access_token, generate_refresh_token
 
 router = APIRouter(
     prefix="/users",
@@ -10,7 +11,7 @@ router = APIRouter(
 
 DB_DEPENDENCY = Depends(get_db)
 
-@router.post("/login", response_model=UserResponseSchema)
+@router.post("/login", response_model=TokenResponseSchema)
 def user_login(
     request: LoginUserSchema,
     db: Session = DB_DEPENDENCY
@@ -32,8 +33,14 @@ def user_login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password"
         )
+    
+    access_token = generate_access_token(user.id)
+    refresh_token = generate_refresh_token(user.id)
 
-    return user
+    return TokenResponseSchema(
+        access_token=access_token,
+        refresh_token=refresh_token
+    )
 
 @router.post("/register", 
              status_code=status.HTTP_201_CREATED, 
