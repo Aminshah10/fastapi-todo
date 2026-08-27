@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, Boolean, DateTime, func
+from sqlalchemy import Integer, Column, String, Boolean, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 from passlib.context import CryptContext
@@ -17,6 +17,7 @@ class UserModel(Base):
     updated_date = Column(DateTime, server_default=func.now(), server_onupdate=func.now())
     
     tasks = relationship("TaskModel", back_populates="user")
+    tokens = relationship("TokenModel", back_populates="user")
     
     def hash_password(self, password: str) -> str:
         return pwd_context.hash(password)
@@ -26,3 +27,14 @@ class UserModel(Base):
     
     def set_password(self, password: str) -> None:
         self.password = self.hash_password(password)
+        
+class TokenModel(Base):
+    __tablename__ = "tokens"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    token = Column(String, nullable=False)
+    created_date = Column(DateTime, server_default=func.now())
+    expiration_date = Column(DateTime, nullable=False)
+
+    user = relationship("UserModel", back_populates="tokens")    
