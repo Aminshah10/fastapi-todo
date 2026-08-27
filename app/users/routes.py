@@ -24,13 +24,13 @@ def user_login(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            detail="Invalid username or password"
         )
 
     if not user.verify_password(request.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid password"
+            detail="Invalid username or password"
         )
 
     return user

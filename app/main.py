@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from fastapi import Depends
 from app.tasks.routes import router as task_routes
 from app.users.routes import router as user_routes
+from app.auth.jwt_auth import get_authenticated_user
 
 @asynccontextmanager
 async def lifespan(app : FastAPI):
@@ -26,3 +29,11 @@ app = FastAPI(
 )
 app.include_router(task_routes)
 app.include_router(user_routes)
+
+@app.get("/public")
+async def get_public_info():
+    return {"message": "This is a public endpoint."}
+
+@app.get("/private")
+async def get_private_info(user=Depends(get_authenticated_user)):  # noqa: B008
+    return {"message": f"This is a private endpoint. Hello, {user.username}!"}
