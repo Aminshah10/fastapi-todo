@@ -7,6 +7,7 @@ from app.core.config import setting
 from app.core.database import Base
 from app.tasks.models import *
 from app.users.models import *
+from app.auth.models import *
 
 
 config = context.config
