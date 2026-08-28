@@ -3,7 +3,7 @@ from app.users.models import UserModel
 from app.users.schemas import RegisterUserSchema, LoginUserSchema, UserResponseSchema, TokenResponseSchema
 from app.core.database import get_db
 from sqlalchemy.orm import Session
-from app.auth.jwt_auth import generate_access_token, generate_refresh_token
+from app.auth.jwt_auth import generate_access_token, generate_refresh_token, save_refresh_token
 
 router = APIRouter(
     prefix="/users",
@@ -24,7 +24,7 @@ def user_login(
 
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password"
         )
 
@@ -35,8 +35,15 @@ def user_login(
         )
     
     access_token = generate_access_token(user.id)
-    refresh_token = generate_refresh_token(user.id)
+    refresh_token, expiration_date = generate_refresh_token(user.id)
 
+    save_refresh_token(
+        db=db,
+        user_id=user.id,
+        refresh_token=refresh_token,
+        expiration_date=expiration_date,
+    )
+       
     return TokenResponseSchema(
         access_token=access_token,
         refresh_token=refresh_token
