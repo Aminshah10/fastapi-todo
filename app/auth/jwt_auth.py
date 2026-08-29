@@ -4,8 +4,9 @@ import hashlib
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError
+from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 from sqlalchemy.orm import Session
+from app.core.config import setting
 
 from app.auth.models import RefreshTokenModel
 from app.core.config import setting
@@ -148,3 +149,66 @@ def save_refresh_token(
 
     return refresh_token_obj
 
+def validate_refresh_token(
+    db: Session,
+    refresh_token: str,
+) -> tuple[UserModel, RefreshTokenModel]:
+
+    hashed_token = hashlib.sha256(
+        refresh_token.encode()
+    ).hexdigest()
+
+    token_obj = (
+        db.query(RefreshTokenModel)
+        .filter(RefreshTokenModel.hashed_token == hashed_token)
+        .first()
+    )
+
+    if not token_obj:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token",
+        )
+
+    if token_obj.revoked:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has been revoked",
+        )
+
+    try:
+        payload = jwt.decode(
+            refresh_token,
+            setting.JWT_SECRET_KEY,
+            algorithms=[setting.JWT_ALGORITHM],
+        )
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has expired",
+        )
+    except InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token",
+        )
+
+    if payload.get("type") != "refresh":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token is not a refresh token",
+        )
+
+    user_obj = (
+        db.query(UserModel)
+        .filter(UserModel.id == token_obj.user_id)
+        .first()
+    )
+
+    if not user_obj:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User associated with the refresh token not found",
+        )
+
+    return user_obj, token_obj

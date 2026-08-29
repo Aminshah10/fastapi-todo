@@ -35,3 +35,6 @@ class TokenResponseSchema(BaseModel):
     token_type: str = "bearer"
 
     model_config = ConfigDict(from_attributes=True)
+
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str
