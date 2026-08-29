@@ -16,7 +16,7 @@ DB_DEPENDENCY = Depends(get_db)
 
 
 @router.post("/refresh")
-async def get_access_by_refresh_token(
+def get_access_by_refresh_token(
     token: RefreshTokenSchema, db: Session = DB_DEPENDENCY
 ):
     user_obj, old_token = validate_refresh_token(db, token.refresh_token)
