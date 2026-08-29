@@ -29,7 +29,7 @@ def get_authenticated_user(
         decoded_token = jwt.decode(
             token,
             setting.JWT_SECRET_KEY,
-            algorithms=["HS256"],
+            algorithms=[setting.JWT_ALGORITHM],
         )
 
         user_id = decoded_token.get("user_id")
@@ -96,7 +96,7 @@ def generate_access_token(
     token = jwt.encode(
         payload,
         setting.JWT_SECRET_KEY,
-        algorithm="HS256",
+        algorithm=setting.JWT_ALGORITHM,
     )
 
     return token
@@ -119,7 +119,7 @@ def generate_refresh_token(
     token = jwt.encode(
         payload,
         setting.JWT_SECRET_KEY,
-        algorithm="HS256",
+        algorithm=setting.JWT_ALGORITHM,
     )
 
     return token, expiration_date
