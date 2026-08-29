@@ -43,7 +43,8 @@ def user_login(
         refresh_token=refresh_token,
         expiration_date=expiration_date,
     )
-       
+    db.commit()
+      
     return TokenResponseSchema(
         access_token=access_token,
         refresh_token=refresh_token

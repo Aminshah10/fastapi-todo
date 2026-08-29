@@ -143,8 +143,6 @@ def save_refresh_token(
     )
 
     db.add(refresh_token_obj)
-    db.commit()
-    db.refresh(refresh_token_obj)
 
     return refresh_token_obj
 
