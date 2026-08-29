@@ -9,7 +9,6 @@ from sqlalchemy.orm import Session
 from app.core.config import setting
 
 from app.auth.models import RefreshTokenModel
-from app.core.config import setting
 from app.core.database import get_db
 from app.users.models import UserModel
 
