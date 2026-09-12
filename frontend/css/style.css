@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+.auth-container {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+
+    background: white;
+
+    padding: 40px;
+
+    border-radius: 12px;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #777;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 7px;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #ddd;
+    border-radius: 7px;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: #555;
+}
+
+button {
+    width: 100%;
+
+    padding: 12px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #222;
+    color: white;
+
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #333;
+}
+
+.switch-page {
+    text-align: center;
+
+    margin-top: 20px;
+
+    color: #777;
+    font-size: 14px;
+}
+
+.switch-page a {
+    color: #222;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.switch-page a:hover {
+    text-decoration: underline;
+}
